@@ -9,6 +9,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engine": {
+    "node": "14.x"
+  },
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
