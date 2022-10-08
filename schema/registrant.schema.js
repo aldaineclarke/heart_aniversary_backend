@@ -23,8 +23,7 @@ let registrantSchema = new Schema({
 
 registrantSchema.methods.checkDupe = function () {
 	return new Promise(async (resolve, reject) => {
-		const dupe = await db
-			.model('Registrant')
+		const dupe = await model('Registrant')
 			.find({ email_address: this.email_address, department: this.department })
 			.catch((err) => {
 				reject(err)
