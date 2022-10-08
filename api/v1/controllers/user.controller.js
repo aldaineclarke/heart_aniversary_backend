@@ -1,5 +1,5 @@
-const User = require("../schema/user.schema");
-const { JSONResponse } = require("../utilities/jsonResponse");
+const User = require("../../../schema/user.schema");
+const { JSONResponse } = require("../../../utilities/jsonResponse");
 const { ObjectId } = require("mongoose").Types;
 
 class UserController {

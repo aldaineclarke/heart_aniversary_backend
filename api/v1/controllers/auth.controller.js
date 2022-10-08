@@ -1,6 +1,6 @@
-const User = require("../schema/user.schema");
-const { JSONResponse } = require("../utilities/jsonResponse");
-const { generateJWTToken } = require("../utilities/tokenGenerator");
+const User = require("../../../schema/user.schema");
+const { JSONResponse } = require("../../../utilities/jsonResponse");
+const { generateJWTToken } = require("../../../utilities/tokenGenerator");
 
 class AuthController {
    static authenticate = async (req, res, next) => {
