@@ -1,8 +1,7 @@
 const Registrant = require("../../../schema/registrant.schema");
-const Department = require("../../../schema/department.schema");
 const { JSONResponse } = require("../../../utilities/jsonResponse");
 const { ObjectId } = require("mongoose").Types;
-const { sendMail } = require("../../../utilities/sendMail");
+
 class RegistrantController {
    /**
     *
@@ -37,12 +36,6 @@ class RegistrantController {
             let duplicate = await registrant.checkDupe();
             if(duplicate) throw new Error("Duplicate registrant found");
             await registrant.save();
-            let department = await Department.findById(registrant.department);
-            let mailData = {
-               recipient: registrant.email_address,
-               subject:`${department.name} Booth Registration`
-            }
-            await sendMail(mailData);
             JSONResponse.success(res, "Registrant profile successfully created", registrant, 201);
         }catch(error){
             JSONResponse.error(res, "Error creating registrant profile", error, 400);
@@ -109,7 +102,6 @@ class RegistrantController {
             throw new Error("Id is not a valid registrant profile in database");
          let registrant = await Registrant.findById(id);
          if (!registrant) throw new Error("Registrant not found with this id");
-         sendMail
          JSONResponse.success(res, "Retrieved registrant info", registrant, 200);
       } catch (error) {
          JSONResponse.error(res, "Unable to find registrant", error, 404);
