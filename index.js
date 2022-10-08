@@ -20,10 +20,7 @@ app.set('views', 'templates')
 app.set('view engine', 'ejs')
 
 app.all("",(req, res) => {
-	res.render('verify', {
-		Title: APP_NAME,
-		Details: `>> ${CORS} <<`,
-	})
+	return res.redirect("/api/v1");
 });
 
 app.use("/api/v1", APIVERSION1);
