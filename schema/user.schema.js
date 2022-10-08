@@ -12,11 +12,20 @@ const userSchema = new Schema({
     }, 
     email: {
         type: String, 
-        unique: [true, "Email already exist in the database"]
+        unique: [true, "Email already exist in the database"],
+        required: [true, "Email already exist in the database"]
     },
     password: {
         type: String, 
         required: [true, "Password was not provided"]
+    },
+    department:{
+        type: Schema.Types.ObjectId,
+        ref: "Department",
+        required: function(){
+            if(this.isSuperAdmin) return false;
+            return true;
+        }
     },
     isSuperAdmin:{
         type: Boolean,
