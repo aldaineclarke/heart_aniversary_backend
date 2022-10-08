@@ -5,11 +5,26 @@ const cors = require("cors");
 const PORT = process.env.PORT || 8000;
 const APIVERSION1 = require("./api/v1/api.routes");
 const mongoose = require("mongoose");
+const { NAME, CORS} = process.env
+
+const APP_NAME = NAME || 'Express API'
+
 // const { swaggerDocs: V1SwaggerDocs} = require( "./swagger")
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+
+// View Engine
+app.set('views', 'templates')
+app.set('view engine', 'ejs')
+
+app.all("",(req, res) => {
+	res.render('verify', {
+		Title: APP_NAME,
+		Details: `>> ${CORS} <<`,
+	})
+});
 
 app.use("/api/v1", APIVERSION1);
 
