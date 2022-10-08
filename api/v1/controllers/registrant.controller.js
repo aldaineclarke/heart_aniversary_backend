@@ -79,7 +79,7 @@ class RegistrantController {
          let id = req.params.id;
          if (!ObjectId.isValid(id))
             throw new Error("ID does not match any registrant profile in database");
-         let registrant = await User.findByIdAndDelete(id);
+         let registrant = await Registrant.findByIdAndDelete(id);
          if (!registrant) throw new Error("Registrant does not exist with this ID");
          JSONResponse.success(res, "Successfully deleted registrant", registrant, 203);
       } catch (error) {
