@@ -33,7 +33,6 @@ userSchema.pre("save", async function(next){
     try{
         if(!this.isModified('password')) return next(); 
         this.password = await bcrypt.hash(this.password,10);       
-        this.isSuperAdmin = false;
     }catch(error){
         return Promise.reject(new Error(error.message));
     }
