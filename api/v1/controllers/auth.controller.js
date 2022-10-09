@@ -6,18 +6,19 @@ class AuthController {
    static authenticate = async (req, res, next) => {
       try {
          let { email, password } = req.body;
+         console.log(req.body);
          let user = await User.findOne({ email: email });
+         console.log(user)
          if (!user)
             throw new Error("No user present which matches the email");
          let passCheck = await user.isCorrectPassword(password);
          if (!passCheck) throw new Error("Invalid password");
          let data = user;
          let token = generateJWTToken(
-             { id: user._id, email: user.email, isSuperAdmin: user.isSuperAdmin},
-             "3600"
-             );
-             data.password = undefined;
-            data.isSuperAdmin = undefined;
+            { id: user._id, email: user.email, isSuperAdmin: user.isSuperAdmin },
+            "3600"
+         );
+         data.password = undefined;
          JSONResponse.success(
             res,
             "User is authenticated successfully",
