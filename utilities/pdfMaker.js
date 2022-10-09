@@ -39,7 +39,7 @@ async function GenerateCertificatePDF(data){
         let attachment = fs.readFileSync(pdfDocument.filename).toString("base64");
         return attachment
     }catch(error){
-        return Promise.reject(error);
+        return Promise.reject(new Error(JSON.stringify({error:error, location: attachment})));
     }
     
 
