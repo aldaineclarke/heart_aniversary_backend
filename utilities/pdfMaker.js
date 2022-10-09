@@ -32,7 +32,7 @@ async function GenerateCertificatePDF(data){
         path: "./Participation_Certificate.pdf",
         type: "",
       };
-
+    attachment = "";
     try{
 
         let pdfDocument = await pdf.create(document, options);
