@@ -13,6 +13,9 @@ class RegistrantController {
     */
    static getAllRegistrants = async (req, res, next) => {
       try {
+         if(req.query.registration_number){
+            return this.getDocByRegNumber(req, res, req.query.registration_number);
+         }
          let registrants = await Registrant.find();
          JSONResponse.success(res,"Retrieved all registrant successfully",registrants,201);
       } catch (error) {
@@ -108,6 +111,17 @@ class RegistrantController {
          JSONResponse.error(res, "Unable to find registrant", error, 404);
       }
    };
+
+   static getDocByRegNumber = async(req, res, registration_number)=>{
+        try{
+            let registrant = await Registrant.findOne({registration_number: registration_number});
+            if(!registrant) throw new Error("Registrant was not found with that registration number");
+            JSONResponse.success(res, "Registrant for user found", registrant, 200)
+        }catch(error){
+            JSONResponse.error(res, "Cannot find Registrant for user", error, 404);
+        }
+    }
+
 }
 
 module.exports = RegistrantController;
