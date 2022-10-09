@@ -29,7 +29,7 @@ async function GenerateCertificatePDF(data){
           date: date,
           department:data.department,
         },
-        path: "./Participation_Certificate.pdf",
+        path: path.resolve(__dirname,"./Participation_Certificate.pdf"),
         type: "",
       };
     attachment = "";
