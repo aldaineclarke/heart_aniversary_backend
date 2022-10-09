@@ -15,6 +15,11 @@ async function GenerateCertificatePDF(data){
         format: "letterA3",
         orientation: "landscape",
         border: "10mm",
+        // setting phantomjs path;
+        phantomPath: path.resolve(
+            process.cwd(),
+            "node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs"
+          )
     
     };
     const document = {
