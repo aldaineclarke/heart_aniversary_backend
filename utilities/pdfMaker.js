@@ -18,7 +18,7 @@ async function GenerateCertificatePDF(data){
         // setting phantomjs path;
         phantomPath: path.resolve(
             process.cwd(),
-            "node_modules/phantomjs-prebuilt/bin/phantomjs"
+            "node_modules/phantomjs-prebuilt/lib/phantom/bin/phantomjs"
           )
     
     };
