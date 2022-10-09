@@ -33,6 +33,7 @@ class RegistrantController {
             let data = req.body;
             if(Object.keys(data).length == 0) throw new Error("No data passed to create registrant profile");
             let registrant = new Registrant(data);
+            registrant.registration_number = await registrant.assignRegNum();
             let duplicate = await registrant.checkDupe();
             if(duplicate) throw new Error("Duplicate registrant found");
             await registrant.save();

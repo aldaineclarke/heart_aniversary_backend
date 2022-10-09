@@ -3,7 +3,13 @@ const Department = require("./department.schema");
 const { sendMail } = require("../utilities/sendMail");
 const pdfMaker = require("../utilities/pdfMaker");
 const mailer = require("../utilities/nodemailer");
+const { randomNumberGenerator } = require("../utilities/randomNumbersGenerator");
+
+
 let registrantSchema = new Schema({
+	registration_number:{
+		type: String,
+	},
 	first_name: {
 		type: String,
 		required: [true, 'first name is required'],
@@ -51,6 +57,11 @@ registrantSchema.pre("save", async function(next){
 	// pdfMaker.deleteGeneratedPDF("Participation_Certificate.pdf");
 })
 
+registrantSchema.methods.assignRegNum = async function (){
+	console.log("Assign number")
+	return await generateRegNumber("13", 8);
+}
+
 registrantSchema.methods.checkDupe = function () {
 	return new Promise(async (resolve, reject) => {
 		const dupe = await model('Registrant')
@@ -60,6 +71,26 @@ registrantSchema.methods.checkDupe = function () {
 			})
 		resolve(dupe.length > 0)
 	})
+}
+
+generateRegNumber = async (data, length)=>{
+	let prefix = data.toString().slice(0, 3);
+	let randNum = randomNumberGenerator(prefix, length);
+	while(true){
+		if(!(await registrantExists(randNum))){
+			break;
+		}
+		randNum = randomNumberGenerator(prefix, length);
+	}
+	return randNum;   
+}
+async function registrantExists(regNumber){
+	const reg =  await model("Registrant").find({registration_number: regNumber});
+	if(reg.length > 0){
+		return true;
+	}
+	return false;
+
 }
 
 const registrantModel = model('Registrant', registrantSchema)
