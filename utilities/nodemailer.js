@@ -23,11 +23,14 @@ class Emailer {
 	sendMail(to, sub, body, attachment) {
 		let selectedAttachment = [];
 		// check if attachment is an array;
-		if(Array.isArray(attachment)){
-			selectedAttachment = attachment;
-		}else{
-			selectedAttachment.push(attachment);
+		if(attachment){
+			if(Array.isArray(attachment)){
+				selectedAttachment = attachment;
+			}else{
+				selectedAttachment.push(attachment);
+			}
 		}
+		
 		let mailOptions = {
 			to: to,
 			from: UMAIL,
