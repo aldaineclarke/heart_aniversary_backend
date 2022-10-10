@@ -39,7 +39,7 @@ registrantSchema.pre("save", async function(next){
 	let verbage = await Verbage.findOne({"name": "WELCOME_EMAIL"});
 	console.log(verbage);
 
-	mailer.sendMail(this.email_address, "Email Test with SMTP Server", "Hello [REGISTRANT_NAME] , \n [WELCOME_VERBAGE]".replace("[WELCOME_VERBAGE]", verbage.description).replace("[REGISTRANT_NAME]", this.first_name+ " "+ this.last_name));
+	mailer.sendMail(this.email_address, "Welcome to Heart's 40th Anniversary", "Hello [REGISTRANT_NAME] , \n [WELCOME_VERBAGE]".replace("[WELCOME_VERBAGE]", verbage.description).replace("[REGISTRANT_NAME]", this.first_name+ " "+ this.last_name));
 
 	// let department = await Department.findById(this.department);
 	// if(!department) return Promise.reject(new Error("Invalid department ID"))
