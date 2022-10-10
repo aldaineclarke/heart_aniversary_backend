@@ -5,7 +5,8 @@ const pdfMaker = require("../utilities/pdfMaker");
 const mailer = require("../utilities/nodemailer");
 const { randomNumberGenerator } = require("../utilities/randomNumbersGenerator");
 const Verbage = require("../schema/verbage.schema");
-
+const createPDF = require('../utilities/pdfGen');
+const path = require("path");
 let registrantSchema = new Schema({
 	registration_number:{
 		type: String,
@@ -38,8 +39,22 @@ let registrantSchema = new Schema({
 registrantSchema.pre("save", async function(next){
 	let verbage = await Verbage.findOne({"name": "WELCOME_EMAIL"});
 	console.log(verbage);
-
-	mailer.sendMail(this.email_address, "Welcome to Heart's 40th Anniversary", "Hello [REGISTRANT_NAME] , \n [WELCOME_VERBAGE]".replace("[WELCOME_VERBAGE]", verbage.description).replace("[REGISTRANT_NAME]", this.first_name+ " "+ this.last_name));
+	let data = {
+		registrant :this.first_name + " " +this.last_name,
+		demonstrator : "Peter Parker"
+	}
+	createPDF(data.registrant, data.demonstrator);
+	mailer.sendMail(
+		this.email_address, 
+		"Welcome to Heart's 40th Anniversary", "Hello [REGISTRANT_NAME] , \n [WELCOME_VERBAGE]".replace("[WELCOME_VERBAGE]", 
+		verbage.description).replace("[REGISTRANT_NAME]", 
+		this.first_name+ " "+ this.last_name),
+		{
+				  filename: "Participation_Certificate.pdf",
+				  contentType: "application/pdf",
+				  path: path.resolve(__dirname,"../assets/PARTICIPANT_CERTIFICATE.pdf")
+		}
+		);
 
 	// let department = await Department.findById(this.department);
 	// if(!department) return Promise.reject(new Error("Invalid department ID"))
