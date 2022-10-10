@@ -1,10 +1,10 @@
 require('dotenv').config()
-const { UMAIL, UPASS } = process.env
+const { SMTP_HOST, UMAIL, UPASS } = process.env
 var nodemailer = require('nodemailer')
 
 class Emailer {
 	#transporter = nodemailer.createTransport({
-        host:"19.213.109.208.host.secureserver.net",
+        host:SMTP_HOST,
         port:465,
         secure:true,
 		auth: {
