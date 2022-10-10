@@ -15,6 +15,7 @@ const path = require("path");
 router.use("/users",userRouter);
 router.use("/departments", require("./routes/department.routes"));
 router.use("/registrants", require("./routes/registrant.routes"));
+router.use("/participants", require("./routes/participant.routes"));
 router.use("/authenticate", require("./routes/auth.routes"));
 
 
