@@ -35,23 +35,14 @@ let registrantSchema = new Schema({
 })
 
 
+// Sends email after registrant has be registered replace variable information depending on the registrant.
 registrantSchema.pre("save", async function(next){
 	let verbage = await Verbage.findOne({"name": "WELCOME_EMAIL"});
-	let data = {
-		registrant :this.first_name + " " +this.last_name,
-		demonstrator : "Peter Parker"
-	}
-	createPDF(data.registrant, data.demonstrator);
 	mailer.sendMail(
 		this.email_address, 
 		"Welcome to Heart's 40th Anniversary", "Hello [REGISTRANT_NAME] , \n [WELCOME_VERBAGE]".replace("[WELCOME_VERBAGE]", 
 		verbage.description).replace("[REGISTRANT_NAME]", 
-		this.first_name+ " "+ this.last_name).replace("[REGISTRATION_NUMBER]", this.registration_number),
-		{
-				  filename: "Participation_Certificate.pdf",
-				  contentType: "application/pdf",
-				  path: path.resolve(__dirname,"../assets/PARTICIPANT_CERTIFICATE.pdf")
-		}
+		this.first_name+ " "+ this.last_name).replace("[REGISTRATION_NUMBER]", this.registration_number)
 		);
 })
 
