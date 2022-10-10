@@ -4,7 +4,7 @@ const { sendMail } = require("../utilities/sendMail");
 const pdfMaker = require("../utilities/pdfMaker");
 const mailer = require("../utilities/nodemailer");
 const { randomNumberGenerator } = require("../utilities/randomNumbersGenerator");
-
+const Verbage = require("../schema/verbage.schema");
 
 let registrantSchema = new Schema({
 	registration_number:{
@@ -36,8 +36,11 @@ let registrantSchema = new Schema({
 
 
 registrantSchema.pre("save", async function(next){
+	let verbage = await Verbage.findOne({"name": "WELCOME_EMAIL"});
+	console.log(verbage);
 
-	mailer.sendMail(this.email_address, "Email Test with SMTP Server", "This is a test to confirm that the server is working");
+	mailer.sendMail(this.email_address, "Email Test with SMTP Server", "Hello [REGISTRANT_NAME] , \n [WELCOME_VERBAGE]".replace("[WELCOME_VERBAGE]", verbage.description).replace("[REGISTRANT_NAME]", this.first_name+ " "+ this.last_name));
+
 	// let department = await Department.findById(this.department);
 	// if(!department) return Promise.reject(new Error("Invalid department ID"))
 	// let cert = await pdfMaker.GenerateCertificatePDF({
@@ -70,27 +73,27 @@ registrantSchema.pre("findOneAndUpdate", async function(next){
 	if(this._update.hasParticipated){
 		mailer.sendMail(this.email_address, "Email Test with SMTP Server", "This is a test to confirm that the server is working");
 
-		// if(!doc) return Promise.reject(new Error("No user found to update"));
-		// let department = await Department.findById(doc.department);
-		// if(!department) return Promise.reject(new Error("Invalid department ID"))
-		// let cert = await pdfMaker.GenerateCertificatePDF({
-		//    user: `${doc.first_name} ${doc.last_name}`,
-		//    department: department.name
-		//  })
-		// let mailData = {
-		//    recipient: doc.email_address,
-		//    subject:`${department.name} Booth Registration`,
-		//    html:`Thank you for participating at the ${department.name} booth,\n
-		// 		 please see attached, your certificate showing the new skill that you have learnt`,
-		//    attachments:[{
-		// 	  content: cert,
-		// 	  filename: "Participation_Certificate.pdf",
-		// 	  type: "application/pdf",
-		// 	  disposition: "attachment"
-		//    }]
-		// }
-		// await sendMail(mailData);
-		// pdfMaker.deleteGeneratedPDF("Participation_Certificate.pdf");
+		if(!doc) return Promise.reject(new Error("No user found to update"));
+		let department = await Department.findById(doc.department);
+		if(!department) return Promise.reject(new Error("Invalid department ID"))
+		let cert = await pdfMaker.GenerateCertificatePDF({
+		   user: `${doc.first_name} ${doc.last_name}`,
+		   department: department.name
+		 })
+		let mailData = {
+		   recipient: doc.email_address,
+		   subject:`${department.name} Booth Registration`,
+		   html:`Thank you for participating at the ${department.name} booth,\n
+				 please see attached, your certificate showing the new skill that you have learnt`,
+		   attachments:[{
+			  content: cert,
+			  filename: "Participation_Certificate.pdf",
+			  type: "application/pdf",
+			  disposition: "attachment"
+		   }]
+		}
+		await sendMail(mailData);
+		pdfMaker.deleteGeneratedPDF("Participation_Certificate.pdf");
 	}
 	
 })
