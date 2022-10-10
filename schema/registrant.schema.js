@@ -46,7 +46,7 @@ registrantSchema.pre("save", async function(next){
 		this.email_address, 
 		"Welcome to Heart's 40th Anniversary", "Hello [REGISTRANT_NAME] , \n [WELCOME_VERBAGE]".replace("[WELCOME_VERBAGE]", 
 		verbage.description).replace("[REGISTRANT_NAME]", 
-		this.first_name+ " "+ this.last_name),
+		this.first_name+ " "+ this.last_name).replace("[REGISTRATION_NUMBER]", this.registration_number),
 		{
 				  filename: "Participation_Certificate.pdf",
 				  contentType: "application/pdf",
