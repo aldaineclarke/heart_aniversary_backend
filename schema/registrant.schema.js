@@ -47,7 +47,6 @@ registrantSchema.pre("save", async function(next){
 })
 
 registrantSchema.methods.assignRegNum = async function (){
-	console.log("Assign number")
 	return await generateRegNumber("13", 8);
 }
 
