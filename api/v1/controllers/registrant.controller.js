@@ -15,7 +15,7 @@ class RegistrantController {
       try {
          if(req.query.registration_number){
             return this.getDocByRegNumber(req, res, req.query.registration_number);
-         }else if(Object.keys(req.query).length == 0){
+         }else if(Object.keys(req.query).length > 0){
             throw new Error("Not an accepted query parameter");
          }
          let registrants = await Registrant.find().populate("department");
@@ -108,6 +108,7 @@ class RegistrantController {
          if (!ObjectId.isValid(id))
             throw new Error("Id is not a valid registrant profile in database");
          let registrant = await Registrant.findById(id).populate("department");
+         console.log(registrant);
          if (!registrant) throw new Error("Registrant not found with this id");
          JSONResponse.success(res, "Retrieved registrant info", registrant, 200);
       } catch (error) {
