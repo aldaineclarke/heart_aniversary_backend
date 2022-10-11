@@ -5,7 +5,7 @@ const Middleware = require('../middlewares/middleware');
 router
     .route("/")
     .get(ParticipantController.getAllParticipants)
-    .post(Middleware.isAuthenticated,Middleware.isSuperAdmin,ParticipantController.createParticipant)
+    .post(Middleware.isAuthenticated,ParticipantController.createParticipant)
 router
     .route("/:id")
     .get(Middleware.isAuthenticated, ParticipantController.getParticipantById)
