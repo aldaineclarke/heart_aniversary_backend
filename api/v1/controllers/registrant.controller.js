@@ -15,8 +15,10 @@ class RegistrantController {
       try {
          if(req.query.registration_number){
             return this.getDocByRegNumber(req, res, req.query.registration_number);
+         }else if(Object.keys(req.query).length > 0){
+            throw new Error("Not an accepted query parameter");
          }
-         let registrants = await Registrant.find();
+         let registrants = await Registrant.find().populate("department");
          JSONResponse.success(res,"Retrieved all registrant successfully",registrants,201);
       } catch (error) {
          JSONResponse.error(res, "Error Retrieving registrant profiles", error, 404);
@@ -39,8 +41,9 @@ class RegistrantController {
             registrant.registration_number = await registrant.assignRegNum();
             let duplicate = await registrant.checkDupe();
             if(duplicate) throw new Error("Duplicate registrant found");
-            await registrant.save();
-            JSONResponse.success(res, "Registrant profile successfully created", registrant, 201);
+            let newRegistrant = await registrant.save();
+            await newRegistrant.populate("department");
+            JSONResponse.success(res, "Registrant profile successfully created", newRegistrant, 201);
         }catch(error){
             JSONResponse.error(res, "Error creating registrant profile", error, 400);
         }
@@ -62,7 +65,7 @@ class RegistrantController {
             if(Object.keys(data).length == 0) {
                 return JSONResponse.success(res, "No data passed, file not updated",{}, 200);
             }
-            let registrant = await Registrant.findOneAndUpdate({_id:id},data, {new:true});
+            let registrant = await Registrant.findOneAndUpdate({_id:id},data, {new:true}).populate("department");
             if(!registrant) throw new Error("Registrant not found with the ID");
             JSONResponse.success(res, "Registrant updated successfully", registrant, 200);
         }catch(error){
@@ -83,7 +86,7 @@ class RegistrantController {
          let id = req.params.id;
          if (!ObjectId.isValid(id))
             throw new Error("ID does not match any registrant profile in database");
-         let registrant = await Registrant.findByIdAndDelete(id);
+         let registrant = await Registrant.findByIdAndDelete(id).populate("department");
          if (!registrant) throw new Error("Registrant does not exist with this ID");
          JSONResponse.success(res, "Successfully deleted registrant", registrant, 203);
       } catch (error) {
@@ -104,7 +107,8 @@ class RegistrantController {
          let id = req.params.id;
          if (!ObjectId.isValid(id))
             throw new Error("Id is not a valid registrant profile in database");
-         let registrant = await Registrant.findById(id);
+         let registrant = await Registrant.findById(id).populate("department");
+         console.log(registrant);
          if (!registrant) throw new Error("Registrant not found with this id");
          JSONResponse.success(res, "Retrieved registrant info", registrant, 200);
       } catch (error) {
@@ -114,7 +118,7 @@ class RegistrantController {
 
    static getDocByRegNumber = async(req, res, registration_number)=>{
         try{
-            let registrant = await Registrant.findOne({registration_number: registration_number});
+            let registrant = await Registrant.findOne({registration_number: registration_number}).populate("department");
             if(!registrant) throw new Error("Registrant was not found with that registration number");
             JSONResponse.success(res, "Registrant for user found", registrant, 200)
         }catch(error){
