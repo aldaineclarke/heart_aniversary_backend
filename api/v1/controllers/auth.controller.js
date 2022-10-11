@@ -13,7 +13,7 @@ class AuthController {
             throw new Error("No user present which matches the email");
          let passCheck = await user.isCorrectPassword(password);
          if (!passCheck) throw new Error("Invalid password");
-         let data = user;
+         let data = (user.department) ? await user.populate("department") : user;
          let token = generateJWTToken(
             { id: user._id, email: user.email, isSuperAdmin: user.isSuperAdmin },
             "3600"

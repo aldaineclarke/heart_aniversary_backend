@@ -13,7 +13,7 @@ class UserController {
     */
    static getAllUsers = async (req, res, next) => {
       try {
-         let users = await User.find();
+         let users = await User.find().populate("department");
          JSONResponse.success(res,"Retrieved all users successfully",users,201);
       } catch (error) {
          JSONResponse.error(res, "Error Retrieving user profiles", error, 404);
@@ -34,7 +34,7 @@ class UserController {
             if(Object.keys(data).length == 0) throw new Error("No data passed to create user profile");
             let user = await new User(data).save();
             user.password = undefined;
-            JSONResponse.success(res, "User profile successfully created", user, 201);
+            JSONResponse.success(res, "User profile successfully created", await user.populate("department"), 201);
         }catch(error){
             JSONResponse.error(res, "Error creating user profile", error, 400);
         }
@@ -56,7 +56,7 @@ class UserController {
             if(Object.keys(data).length == 0) {
                 return JSONResponse.success(res, "No data passed, file not updated",{}, 200);
             }
-            let user = await User.findOneAndUpdate({_id:id},data, {new:true});
+            let user = await User.findOneAndUpdate({_id:id},data, {new:true}).populate("department");
             if(!user) throw new Error("User not found with the ID");
             JSONResponse.success(res, "User updated successfully", user, 200);
         }catch(error){
@@ -77,7 +77,7 @@ class UserController {
          let id = req.params.id;
          if (!ObjectId.isValid(id))
             throw new Error("ID does not match any user profile in database");
-         let user = await User.findByIdAndDelete(id);
+         let user = await User.findByIdAndDelete(id).populate("department");
          if (!user) throw new Error("User does not exist with this ID");
          JSONResponse.success(res, "Successfully deleted user", user, 203);
       } catch (error) {
@@ -98,7 +98,7 @@ class UserController {
          let id = req.params.id;
          if (!ObjectId.isValid(id))
             throw new Error("Id is not a valid user profile in database");
-         let user = await User.findById(id);
+         let user = await User.findById(id).populate("department");
          if (!user) throw new Error("User not found with this id");
          user.password = undefined;
          JSONResponse.success(res, "Retrieved user info", user, 200);
