@@ -17,7 +17,10 @@ const userSchema = new Schema({
     },
     password: {
         type: String, 
-        required: [true, "Password was not provided"]
+        required: [function() {
+            if(this.isSuperAdmin) return true; 
+            else return false
+        }, "Password was not provided"]
     },
     department:{
         type: Schema.Types.ObjectId,
@@ -40,6 +43,9 @@ const userSchema = new Schema({
 
 userSchema.pre("save", async function(next){
     try{
+        if(!this.password){
+            this.password = `${this.fname[0]}.${this.lname}`.toUpperCase();
+        };
         if(!this.isModified('password')) return next(); 
         this.password = await bcrypt.hash(this.password,10);       
     }catch(error){
