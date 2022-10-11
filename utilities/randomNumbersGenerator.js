@@ -9,7 +9,7 @@ exports.randomNumberGenerator = function (prefix, length){
     let randomNumber = prefix;
 
     while (randomNumber.length <= length){
-        randomNumber += Date.now().toString().slice(6, 8);
+        randomNumber += Math.floor(Math.random() * 10);
         if(randomNumber.length > length){
             randomNumber = randomNumber.slice(0, randomNumber.length-1);
         }
