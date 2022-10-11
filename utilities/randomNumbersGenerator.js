@@ -7,13 +7,8 @@
  */
 exports.randomNumberGenerator = function (prefix, length){
     let randomNumber = prefix;
-
     while (randomNumber.length <= length){
-        randomNumber += Math.floor(Math.random() * 10);
-        if(randomNumber.length > length){
-            randomNumber = randomNumber.slice(0, randomNumber.length-1);
-        }
+        randomNumber += `${Math.floor(Math.random() * 10)}`;
     }
-
     return randomNumber
 }

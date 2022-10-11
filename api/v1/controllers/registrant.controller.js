@@ -39,14 +39,15 @@ class RegistrantController {
             if(Object.keys(data).length == 0) throw new Error("No data passed to create registrant profile");
             let registrant = new Registrant(data);
             registrant.registration_number = await registrant.assignRegNum();
+            console.log(registrant.registration_number);
             let duplicate = await registrant.checkDupe();
             if(duplicate) throw new Error("Duplicate registrant found");
-            let newRegistrant = await registrant.save();
-            await newRegistrant.populate("department");
-            JSONResponse.success(res, "Registrant profile successfully created", newRegistrant, 201);
+            await registrant.save();
+            JSONResponse.success(res, "Registrant profile successfully created", await registrant.populate("department"), 201);
         }catch(error){
             JSONResponse.error(res, "Error creating registrant profile", error, 400);
         }
+
     }
 
         /**

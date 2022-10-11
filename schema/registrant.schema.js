@@ -47,7 +47,8 @@ registrantSchema.pre("save", async function(next){
 })
 
 registrantSchema.methods.assignRegNum = async function (){
-	return await generateRegNumber("13", 8);
+	let num = await generateRegNumber("13", 8);
+	return num
 }
 
 registrantSchema.methods.checkDupe = function () {
@@ -61,14 +62,13 @@ registrantSchema.methods.checkDupe = function () {
 	})
 }
 
-generateRegNumber = async (data, length)=>{
-	let prefix = data.toString().slice(0, 3);
-	let randNum = randomNumberGenerator(prefix, length);
+async function generateRegNumber(data, length){
+	let randNum = randomNumberGenerator(data, length);
 	while(true){
 		if(!(await registrantExists(randNum))){
 			break;
 		}
-		randNum = randomNumberGenerator(prefix, length);
+		randNum = randomNumberGenerator(data, length);
 	}
 	return randNum;   
 }
