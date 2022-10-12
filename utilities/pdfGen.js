@@ -8,24 +8,32 @@ const path = require("path");
 
 
 
-function createPDF(registrant, demonstrator){
+function createPDF(registrant,regNumber, demonstrator, department){
     const doc = new PDF({
         layout: "landscape",
         size: "A4",
     
     });
+
     doc.pipe(fs.createWriteStream(`./assets/PARTICIPANT_CERTIFICATE.pdf`))
 
-    doc.image(path.resolve(__dirname, "../assets/images/certificate_with_text.png"),0,0,{width:850});
+    doc.image(path.resolve(__dirname, "../assets/images/certificate_alt_text.png"),0,0,{width:850});
 
-    doc.fontSize(60).text(registrant, 30, 250,{
+
+    doc.font(path.resolve(__dirname, "../assets/fonts/ocr-abt.ttf")).fontSize(50).text(registrant, 40, 240,{
+        align:"center"
+    });
+    doc.font(path.resolve(__dirname, "../assets/fonts/ocr-abt.ttf")).fontSize(20).text(regNumber, 30, 50,{
         align:"center"
     });
 
-    doc.fontSize(14).text(demonstrator, -380,452,{
-        align:"center"
+    doc.font(path.resolve(__dirname, "../assets/fonts/ocr-abt.ttf")).fontSize(12).text(demonstrator, 148,452,{
+    
     })
-    doc.fontSize(14).text(moment().format("MMMM D, YYYY"), 500,453,{
+    doc.font(path.resolve(__dirname, "../assets/fonts/ocr-abt.ttf")).fontSize(18).text(department, 355,323,{
+
+    })
+    doc.font(path.resolve(__dirname, "../assets/fonts/ocr-abt.ttf")).fontSize(12).text(moment().format("MMMM D,YYYY"), 525,452,{
         align:"center"
     })
 
@@ -33,4 +41,5 @@ function createPDF(registrant, demonstrator){
 }
 
 
+// createPDF("Pharell Williams", "12345678", "Daniel Pheobe", "Network Support")
 module.exports = createPDF;

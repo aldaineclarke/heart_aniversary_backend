@@ -17,7 +17,6 @@ const participantSchema = new Schema({
 participantSchema.pre("save",async function(){
     console.log(this.registrant.toString());
     let registrant = await Registrant.findOne({_id: this.registrant});
-    console.log(registrant)
     if(!registrant) return Promise.reject(new Error("No registrant found with this ID"));
     let regName = `${registrant.first_name} ${registrant.last_name}`;
     let department = await Department.findOne({_id: this.department.toString()});
@@ -29,7 +28,7 @@ participantSchema.pre("save",async function(){
 
     let demonstratorName = `${user.fname} ${user.lname}`;
 
-    createPDF(regName, demonstratorName);
+    createPDF(regName, registrant.registration_number ,demonstratorName,depName);
 	mailer.sendMail(
 		registrant.email_address, 
 		"Welcome to Heart's 40th Anniversary", "Hello [REGISTRANT_NAME] , \n [I_DID_A_SKILL]".replace("[I_DID_A_SKILL]", 
