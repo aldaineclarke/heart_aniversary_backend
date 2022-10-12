@@ -15,6 +15,8 @@ function createPDF(registrant,regNumber, demonstrator, department){
     
     });
 
+    demonstrator = "ETI"
+
     doc.pipe(fs.createWriteStream(`./assets/PARTICIPANT_CERTIFICATE.pdf`))
 
     doc.image(path.resolve(__dirname, "../assets/images/certificate_alt_text.png"),0,0,{width:850});
